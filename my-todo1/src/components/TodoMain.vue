@@ -22,7 +22,9 @@
             </span>
           </li> -->
           <li v-for="todo in todos" :key="todo.text">
-            <i :class="['fa-check-square', todo.state === 'yet' ? 'far' : 'fas']"></i>
+            <i
+              :class="['fa-check-square', todo.state === 'yet' ? 'far' : 'fas']"
+            ></i>
             <span>
               {{ todo.text }}
               <b>
