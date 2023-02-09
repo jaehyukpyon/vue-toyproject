@@ -59,6 +59,10 @@ export default {
         text: this.addItemText,
         state: 'yet',
       }
+      if (this.addItemText == '') {
+        alert('할일을 입력하세요.');
+        return;
+      }
       this.todos.push(newTodo);
       this.addItemText = '';
     },
