@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import { db } from "../firebase/db";
+
 export default {
   data() {
     return {
@@ -52,23 +54,35 @@ export default {
       writeState: "add",
       editItemText: "",
       todos: [
-        { text: "공부하기", state: "yet" },
-        { text: "운동하기", state: "done" },
-        { text: "글쓰기", state: "done" },
+        // { text: "공부하기", state: "yet" },
+        // { text: "운동하기", state: "done" },
+        // { text: "글쓰기", state: "done" },
       ],
     };
   },
   methods: {
     addItem() {
-      const newTodo = {
-        text: this.addItemText,
-        state: "yet",
-      };
-      if (this.addItemText == "") {
-        alert("할일을 입력하세요.");
-        return;
-      }
-      this.todos.push(newTodo);
+      // const newTodo = {
+      //   text: this.addItemText,
+      //   state: "yet",
+      // };
+      // if (this.addItemText == "") {
+      //   alert("할일을 입력하세요.");
+      //   return;
+      // }
+      // this.todos.push(newTodo);
+      // this.addItemText = "";
+      if (this.addItemText == "") return;
+      db.collection("todos")
+        .add({
+          text: this.addItemText,
+          state: "yet",
+        })
+        .then((snapShot) => {
+          db.collection("todos").doc(snapShot.id).update({
+            id: snapShot.id,
+          });
+        });
       this.addItemText = "";
     },
     checkItem(index) {
@@ -83,20 +97,38 @@ export default {
       this.crrEditItem = index1;
       this.writeState = "edit";
       this.editItemText = this.todos[index1].text;
-      this.$refs.list.children[index1].className = 'editing'; // 연한 연두색으로 색 변경
+      this.$refs.list.children[index1].className = "editing"; // 연한 연두색으로 색 변경
     },
     editSave() {
-      this.todos[this.crrEditItem].text = this.editItemText;
+      //this.todos[this.crrEditItem].text = this.editItemText;
       this.writeState = "add";
-      this.$refs.list.children[this.crrEditItem].className = '';
+      this.$refs.list.children[this.crrEditItem].className = "";
+
+      db.collection("todos").doc(this.todos[this.crrEditItem].id).update({
+        text: this.editItemText,
+      });
     },
     deleteTodo(index1) {
-      this.todos.splice(index1, 1);
-      this.writeState = "add";
+      // this.todos.splice(index1, 1);
+      // this.writeState = "add";
+
+      db.collection("todos").doc(this.todos[index1].id).delete();
     },
   },
   mounted() {
     this.$refs.writeArea.focus();
+
+    db.collection("todos")
+      .get()
+      .then((result) => {
+        result.forEach((doc) => {
+          console.log(doc.data());
+          this.todos.push(doc.data());
+        });
+      });
+  },
+  firestore: {
+    todos: db.collection("todos"), // 이 객체 프로퍼티명 즉 todos가 firebase db의 컬렉션명과 동일해야 함.
   },
 };
 </script>
