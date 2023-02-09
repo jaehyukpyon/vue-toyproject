@@ -4,12 +4,18 @@
 
     <main>
       <div class="todos">
-
-        <div v-if="writeState === 'add'" class="write"> <!--새로운 걸 등록시-->
-          <input type="text" v-model="addItemText" @keyup.enter="addItem" ref="writeArea" />
+        <div v-if="writeState === 'add'" class="write">
+          <!--새로운 걸 등록시-->
+          <input
+            type="text"
+            v-model="addItemText"
+            @keyup.enter="addItem"
+            ref="writeArea"
+          />
           <button class="btn add" @click="addItem">Add to List</button>
         </div>
-        <div v-else class="write"> <!--기존 걸 수정시-->
+        <div v-else class="write">
+          <!--기존 걸 수정시-->
           <input type="text" v-model="editItemText" @keyup.enter="editSave" />
           <button class="btn add" @click="editSave">Save (Edit)</button>
         </div>
@@ -38,51 +44,51 @@
 export default {
   data() {
     return {
-      addItemText: '',
+      addItemText: "",
       crrEditItem: -1,
-      writeState: 'add',
-      editItemText: '',
+      writeState: "add",
+      editItemText: "",
       todos: [
         { text: "공부하기", state: "yet" },
         { text: "운동하기", state: "done" },
         { text: "글쓰기", state: "done" },
       ],
-    }
+    };
   },
   methods: {
     addItem() {
       const newTodo = {
         text: this.addItemText,
-        state: 'yet',
-      }
-      if (this.addItemText == '') {
-        alert('할일을 입력하세요.');
+        state: "yet",
+      };
+      if (this.addItemText == "") {
+        alert("할일을 입력하세요.");
         return;
       }
       this.todos.push(newTodo);
-      this.addItemText = '';
+      this.addItemText = "";
     },
     checkItem(index) {
-      if (this.todos[index].state === 'yet') {
-        this.todos[index].state = 'done';
+      if (this.todos[index].state === "yet") {
+        this.todos[index].state = "done";
       } else {
-        this.todos[index].state = 'yet';
+        this.todos[index].state = "yet";
       }
     },
     editShow(index1) {
       console.log(`index >> ${index1}`);
       this.crrEditItem = index1;
-      this.writeState = 'edit';
+      this.writeState = "edit";
       this.editItemText = this.todos[index1].text;
     },
     editSave() {
       this.todos[this.crrEditItem].text = this.editItemText;
-      this.writeState = 'add';
+      this.writeState = "add";
     },
     deleteTodo(index1) {
       this.todos.splice(index1, 1);
-    }
-  }, 
+    },
+  },
   mounted() {
     this.$refs.writeArea.focus();
   },
