@@ -4,10 +4,12 @@
 
     <main>
       <div class="todos">
+
         <div class="write">
-          <input type="text" />
-          <button class="btn add">Add to List</button>
+          <input type="text" v-model="addItemText" @keyup.enter="addItem" />
+          <button class="btn add" @click="addItem">Add to List</button>
         </div>
+
         <ul class="list">
           <!-- <li>
             한 줄로 렌더링됨
@@ -43,6 +45,7 @@
 export default {
   data() {
     return {
+      addItemText: '',
       todos: [
         { text: "공부하기", state: "yet" },
         { text: "운동하기", state: "done" },
@@ -50,6 +53,16 @@ export default {
       ],
     };
   },
+  methods: {
+    addItem() {
+      const newTodo = {
+        text: this.addItemText,
+        state: 'yet',
+      }
+      this.todos.push(newTodo);
+      this.addItemText = '';
+    },
+  },  
 };
 </script>
 
