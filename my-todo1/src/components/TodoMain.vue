@@ -6,7 +6,7 @@
       <div class="todos">
 
         <div class="write">
-          <input type="text" v-model="addItemText" @keyup.enter="addItem" />
+          <input type="text" v-model="addItemText" @keyup.enter="addItem" ref="writeArea" />
           <button class="btn add" @click="addItem">Add to List</button>
         </div>
 
@@ -23,9 +23,10 @@
               </b>
             </span>
           </li> -->
-          <li v-for="todo in todos" :key="todo.text">
+          <li v-for="(todo, index) in todos" :key="index">
             <i
               :class="['fa-check-square', todo.state === 'yet' ? 'far' : 'fas']"
+              @click="checkItem(index)"
             ></i>
             <span>
               {{ todo.text }}
@@ -66,7 +67,17 @@ export default {
       this.todos.push(newTodo);
       this.addItemText = '';
     },
-  },  
+    checkItem(index) {
+      if (this.todos[index].state === 'yet') {
+        this.todos[index].state = 'done';
+      } else {
+        this.todos[index].state = 'yet';
+      }
+    }
+  }, 
+  mounted() {
+    this.$refs.writeArea.focus();
+  },
 };
 </script>
 
