@@ -4,23 +4,26 @@
 
     <main>
       <div class="todos">
-        <div v-if="writeState === 'add'" class="write">
+        <transition name="fade">
           <!--새로운 걸 등록시-->
-          <input
-            type="text"
-            v-model="addItemText"
-            @keyup.enter="addItem"
-            ref="writeArea"
-          />
-          <button class="btn add" @click="addItem">Add to List</button>
-        </div>
-        <div v-else class="write">
-          <!--기존 걸 수정시-->
-          <input type="text" v-model="editItemText" @keyup.enter="editSave" />
-          <button class="btn add" @click="editSave">Save (Edit)</button>
-        </div>
+          <div v-if="writeState === 'add'" class="write add" key="add">
+            <input
+              type="text"
+              v-model="addItemText"
+              @keyup.enter="addItem"
+              ref="writeArea"
+            />
+            <button class="btn add" @click="addItem">Add to List</button>
+          </div>
 
-        <ul class="list">
+          <!--기존 걸 수정시-->
+          <div v-else class="write edit" key="edit">
+            <input type="text" v-model="editItemText" @keyup.enter="editSave" />
+            <button class="btn add" @click="editSave">Save (Edit)</button>
+          </div>
+        </transition>
+
+        <ul class="list" ref="list">
           <li v-for="(todo, i) in todos" :key="i">
             <i
               :class="['fa-check-square', todo.state === 'yet' ? 'far' : 'fas']"
@@ -80,13 +83,16 @@ export default {
       this.crrEditItem = index1;
       this.writeState = "edit";
       this.editItemText = this.todos[index1].text;
+      this.$refs.list.children[index1].className = 'editing'; // 연한 연두색으로 색 변경
     },
     editSave() {
       this.todos[this.crrEditItem].text = this.editItemText;
       this.writeState = "add";
+      this.$refs.list.children[this.crrEditItem].className = '';
     },
     deleteTodo(index1) {
       this.todos.splice(index1, 1);
+      this.writeState = "add";
     },
   },
   mounted() {
