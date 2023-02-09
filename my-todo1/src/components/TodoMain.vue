@@ -1,6 +1,19 @@
 <template>
   <div class="page">
-    <header><h1>My Todo List</h1></header>
+    <header><h1>
+      Vue Fire todo1
+      <span class="pie">
+        <svg viewBox="0 0 64 64">
+          <circle class="pie" r="32" cx="32" cy="32" style="stroke-width: 64;"></circle>
+          <circle class="slice" r="32" cx="32" cy="32" 
+          :style="{ 
+            strokeWidth: 64, 
+            strokeDasharray: totalTodo + ', 201',
+            transition: 'all 0.3s linear'
+          }"></circle>
+        </svg>
+      </span>
+    </h1></header>
 
     <main>
       <div class="todos">
@@ -60,6 +73,17 @@ export default {
       ],
     };
   },
+  computed: {
+    totalTodo() {
+      let totalNum = 0;
+      this.todos.forEach(item => {
+        if (item.state === 'done') {
+          totalNum++;
+        }
+      });
+      return (totalNum / this.todos.length) * 201;
+    },
+  },
   methods: {
     addItem() {
       // const newTodo = {
@@ -77,6 +101,7 @@ export default {
         .add({
           text: this.addItemText,
           state: "yet",
+          createdAt: new Date(),
         })
         .then((snapShot) => {
           db.collection("todos").doc(snapShot.id).update({
@@ -87,9 +112,15 @@ export default {
     },
     checkItem(index) {
       if (this.todos[index].state === "yet") {
-        this.todos[index].state = "done";
+        // this.todos[index].state = "done";
+        db.collection("todos").doc(this.todos[index].id).update({
+          state: "done",
+        });
       } else {
-        this.todos[index].state = "yet";
+        // this.todos[index].state = "yet";
+        db.collection("todos").doc(this.todos[index].id).update({
+          state: "yet",
+        });
       }
     },
     editShow(index1) {
@@ -118,17 +149,17 @@ export default {
   mounted() {
     this.$refs.writeArea.focus();
 
-    db.collection("todos")
-      .get()
-      .then((result) => {
-        result.forEach((doc) => {
-          console.log(doc.data());
-          this.todos.push(doc.data());
-        });
-      });
+    // db.collection("todos")
+    //   .get()
+    //   .then((result) => {
+    //     result.forEach((doc) => {
+    //       console.log(doc.data());
+    //       this.todos.push(doc.data());
+    //     });
+    //   });
   },
   firestore: {
-    todos: db.collection("todos"), // 이 객체 프로퍼티명 즉 todos가 firebase db의 컬렉션명과 동일해야 함.
+    todos: db.collection("todos").orderBy("createdAt", "desc"), // 이 객체 프로퍼티명 즉 todos가 firebase db의 컬렉션명과 동일해야 함.
   },
 };
 </script>
