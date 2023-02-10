@@ -1,10 +1,11 @@
 import { createStore } from 'vuex'
-import { fetchListItem, fetchUserInfo } from '../api/index'
+import { fetchListItem, fetchUserInfo, fetchAskItem } from '../api/index'
 
 export default createStore({
   state: {
     list: [],
     user: '',
+    item: '',
   },
   getters: {
   },
@@ -16,6 +17,9 @@ export default createStore({
     },
     SET_USER(state, user) {
       state.user = user;
+    },
+    SET_ITEM(state, item) {
+      state.item = item;
     },
   },
   actions: {
@@ -39,6 +43,20 @@ export default createStore({
       return fetchUserInfo(userName)
               .then(res => {
                 context.commit('SET_USER', res.data);
+                //console.log(`res.data >> ${res}`);
+                return res;                
+              })
+              .catch(err => {
+                console.log(err);
+              });
+    },
+
+    FETCH_ITEM(context, id) {
+      console.log('index.js >> FETCH_USER');
+      // pageName 받는 이유 news에서 사용하면 news가 필요해성
+      return fetchAskItem(id)
+              .then(res => {
+                context.commit('SET_ITEM', res.data);
                 //console.log(`res.data >> ${res}`);
                 return res;                
               })

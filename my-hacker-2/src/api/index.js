@@ -8,13 +8,19 @@ const config = {
 
 // 2.api함수들을 정리 : 데이터를 가져오는 행동 대장들
 function fetchListItem(pageName) {
+    console.log(`fetchListItem - pageName >> ${pageName}`);
     return axios.get(`${config.baseUrl}/${pageName}/1.json`);
 }
 
 function fetchUserInfo(userName) {
-    console.log('userName >> ' + userName);
+    console.log('fetchUserInfo - userName >> ' + userName);
     return axios.get(`${config.baseUrl}/user/${userName}.json`);
 }
 
+function fetchAskItem(askId) {
+    console.log('fetchAskItem - askId >> ' + askId);
+    return axios.get(`${config.baseUrl}/item/${askId}.json`);
+}
+
 // 3. export : 행동대장들을 actions가 쓸 수 있도록 export해둠.
-export { fetchListItem, fetchUserInfo };
+export { fetchListItem, fetchUserInfo, fetchAskItem };
